@@ -1,0 +1,35 @@
+import pyautogui
+import time
+import math
+
+pyautogui.FAILSAFE = True
+
+IDLE_TIME = 5       # Seconds before the mouse starts moving
+RADIUS = 30         # Size of movement
+SPEED = 0.05        # Lower = faster movement
+
+last_mouse_pos = pyautogui.position()
+last_movement = time.time()
+angle = 0
+
+while True:
+    current_pos = pyautogui.position()
+
+    # Detect manual mouse movement
+    if current_pos != last_mouse_pos:
+        last_movement = time.time()
+        angle = 0
+
+    # Mouse has been still long enough
+    if time.time() - last_movement >= IDLE_TIME:
+        center_x, center_y = current_pos
+
+        x = center_x + RADIUS * math.cos(angle)
+        y = center_y + RADIUS * math.sin(angle)
+
+        pyautogui.moveTo(x, y, duration=SPEED)
+
+        angle += 0.15
+
+    last_mouse_pos = pyautogui.position()
+    time.sleep(0.05)
