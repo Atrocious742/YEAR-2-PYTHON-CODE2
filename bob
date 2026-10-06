@@ -1,6 +1,11 @@
 import pyautogui
+import pystray
 import time
 import math
+import threading
+
+from PIL import Image, ImageDraw
+
 
 # =========================
 # SETTINGS
@@ -9,20 +14,25 @@ import math
 pyautogui.FAILSAFE = True
 pyautogui.PAUSE = 0
 
-IDLE_TIME = 5.0
+# Adjustable settings
+IDLE_TIME = 5.0       # seconds
+SPEED = 1.0           # movement speed multiplier
+LOOP_SIZE = 100       # percentage of default loop size
 
-# How fast the infinity loop runs
+# Animation update rate
 FPS = 100
-STEP = 0.04
 
-# Size of infinity loop
+# =========================
+# SCREEN / LOOP SETTINGS
+# =========================
+
 SCREEN_W, SCREEN_H = pyautogui.size()
-
-RADIUS_X = SCREEN_W * 0.35
-RADIUS_Y = SCREEN_H * 0.20
 
 CENTER_X = SCREEN_W / 2
 CENTER_Y = SCREEN_H / 2
+
+BASE_RADIUS_X = SCREEN_W * 0.35
+BASE_RADIUS_Y = SCREEN_H * 0.20
 
 
 # =========================
@@ -30,43 +40,54 @@ CENTER_Y = SCREEN_H / 2
 # =========================
 
 moving = False
+running = True
 angle = 0.0
 
 last_user_position = pyautogui.position()
 last_user_movement = time.monotonic()
 
+state_lock = threading.Lock()
+
 
 # =========================
-# MAIN LOOP
+# CALCULATE LOOP SIZE
 # =========================
 
-print("Mouse mover running.")
-print()
-print("Automatic movement starts after 5 seconds of inactivity.")
-print()
-print("To STOP the program:")
-print("  - Press CTRL+C in this Command Prompt")
-print("  - OR move the mouse to the TOP-LEFT corner")
-print()
-print("Starting in 3 seconds...")
+def get_radii():
+    """
+    LOOP_SIZE = 100 means normal size.
+    50 = half size.
+    150 = 1.5x size.
+    """
 
-time.sleep(3)
+    multiplier = LOOP_SIZE / 100.0
 
-try:
+    radius_x = BASE_RADIUS_X * multiplier
+    radius_y = BASE_RADIUS_Y * multiplier
 
-    while True:
+    return radius_x, radius_y
 
-        # ---------------------------------
-        # ALWAYS CHECK CURRENT MOUSE POSITION
-        # ---------------------------------
+
+# =========================
+# MOUSE MOVEMENT THREAD
+# =========================
+
+def mouse_loop():
+
+    global moving
+    global angle
+    global last_user_position
+    global last_user_movement
+
+    while running:
 
         current = pyautogui.position()
 
-        # Explicit emergency stop
+        # Emergency stop
         if current.x <= 2 and current.y <= 2:
             print("Emergency stop.")
-            break
-
+            stop_program()
+            return
 
         # =================================
         # USER HAS CONTROL
@@ -74,24 +95,17 @@ try:
 
         if not moving:
 
-            # Has the user moved the mouse?
             if current != last_user_position:
 
                 last_user_position = current
                 last_user_movement = time.monotonic()
 
-            # Start automatically after exactly
-            # IDLE_TIME seconds without movement
             elif time.monotonic() - last_user_movement >= IDLE_TIME:
 
                 moving = True
-
-                # ALWAYS start the infinity loop
-                # from the same point.
                 angle = 0.0
 
                 print("Automatic movement started.")
-
 
         # =================================
         # AUTOMATIC MOVEMENT
@@ -99,25 +113,25 @@ try:
 
         else:
 
-            # Calculate infinity / figure-8 position
+            radius_x, radius_y = get_radii()
+
             x = (
                 CENTER_X
-                + RADIUS_X * math.sin(angle)
+                + radius_x * math.sin(angle)
             )
 
             y = (
                 CENTER_Y
-                + RADIUS_Y * math.sin(2 * angle)
+                + radius_y * math.sin(2 * angle)
             )
 
-            # Keep cursor safely inside screen
+            # Keep cursor inside screen
             x = max(1, min(SCREEN_W - 2, x))
             y = max(1, min(SCREEN_H - 2, y))
 
             target_x = round(x)
             target_y = round(y)
 
-            # Move immediately
             pyautogui.moveTo(
                 target_x,
                 target_y,
@@ -125,54 +139,312 @@ try:
                 _pause=False
             )
 
-            # Advance the animation
-            angle += STEP
+            # Speed controls how quickly the loop progresses.
+            angle += 0.04 * SPEED
 
-            # Keep angle from growing forever
             if angle >= math.tau:
                 angle -= math.tau
-
-            # ---------------------------------
-            # IMPORTANT:
-            # Give the user a chance to take over
-            # ---------------------------------
 
             time.sleep(1 / FPS)
 
             actual = pyautogui.position()
 
-            # If the mouse isn't where WE just put it,
-            # something else moved it.
-            #
-            # Therefore assume the user has taken control.
+            # User has taken control
             if (
                 abs(actual.x - target_x) > 10
-                or
-                abs(actual.y - target_y) > 10
+                or abs(actual.y - target_y) > 10
             ):
 
                 moving = False
 
-                # Reset the idle timer NOW.
                 last_user_position = actual
                 last_user_movement = time.monotonic()
 
                 print("User movement detected.")
-                print("Waiting 5 seconds...")
+                print(f"Waiting {IDLE_TIME:.1f} seconds...")
 
 
-except pyautogui.FailSafeException:
+# =========================
+# TRAY ICON
+# =========================
 
-    print()
-    print("Emergency stop: mouse reached the top-left corner.")
+def create_icon():
+
+    image = Image.new(
+        "RGB",
+        (64, 64),
+        "black"
+    )
+
+    draw = ImageDraw.Draw(image)
+
+    # Draw a simple infinity symbol
+    points = []
+
+    for i in range(100):
+
+        a = i / 100 * math.tau
+
+        x = 32 + 24 * math.sin(a)
+        y = 32 + 16 * math.sin(2 * a)
+
+        points.append((x, y))
+
+    draw.line(
+        points,
+        fill="white",
+        width=4
+    )
+
+    return image
 
 
-except KeyboardInterrupt:
+# =========================
+# TRAY MENU
+# =========================
 
-    print()
-    print("Stopped with CTRL+C.")
+def set_idle_time(value):
+
+    global IDLE_TIME
+
+    IDLE_TIME = float(value)
+
+    print(f"Idle time: {IDLE_TIME} seconds")
 
 
-finally:
+def set_speed(value):
 
-    print("Mouse mover stopped.")
+    global SPEED
+
+    SPEED = float(value)
+
+    print(f"Speed: {SPEED}x")
+
+
+def set_loop_size(value):
+
+    global LOOP_SIZE
+
+    LOOP_SIZE = int(value)
+
+    print(f"Loop size: {LOOP_SIZE}%")
+
+
+def toggle_movement(icon, item):
+
+    global moving
+    global last_user_movement
+    global last_user_position
+
+    moving = not moving
+
+    if moving:
+        print("Movement enabled.")
+    else:
+        print("Movement paused.")
+
+        # Reset idle timer
+        last_user_position = pyautogui.position()
+        last_user_movement = time.monotonic()
+
+
+def stop_program():
+
+    global running
+
+    running = False
+
+
+def exit_program(icon, item):
+
+    global running
+
+    running = False
+
+    icon.stop()
+
+
+# =========================
+# TRAY MENU
+# =========================
+
+def build_menu():
+
+    return pystray.Menu(
+
+        pystray.MenuItem(
+            "Movement",
+            toggle_movement,
+            checked=lambda item: moving
+        ),
+
+        pystray.Menu.SEPARATOR,
+
+        # -------------------------
+        # SPEED
+        # -------------------------
+
+        pystray.MenuItem(
+            "Speed",
+            pystray.Menu(
+                pystray.MenuItem(
+                    "0.25x",
+                    lambda icon, item: set_speed(0.25),
+                    checked=lambda item: SPEED == 0.25
+                ),
+                pystray.MenuItem(
+                    "0.5x",
+                    lambda icon, item: set_speed(0.5),
+                    checked=lambda item: SPEED == 0.5
+                ),
+                pystray.MenuItem(
+                    "1x",
+                    lambda icon, item: set_speed(1.0),
+                    checked=lambda item: SPEED == 1.0
+                ),
+                pystray.MenuItem(
+                    "1.5x",
+                    lambda icon, item: set_speed(1.5),
+                    checked=lambda item: SPEED == 1.5
+                ),
+                pystray.MenuItem(
+                    "2x",
+                    lambda icon, item: set_speed(2.0),
+                    checked=lambda item: SPEED == 2.0
+                ),
+                pystray.MenuItem(
+                    "3x",
+                    lambda icon, item: set_speed(3.0),
+                    checked=lambda item: SPEED == 3.0
+                ),
+                pystray.MenuItem(
+                    "5x",
+                    lambda icon, item: set_speed(5.0),
+                    checked=lambda item: SPEED == 5.0
+                ),
+            )
+        ),
+
+        # -------------------------
+        # IDLE TIME
+        # -------------------------
+
+        pystray.MenuItem(
+            "Idle Time",
+            pystray.Menu(
+                pystray.MenuItem(
+                    "2 seconds",
+                    lambda icon, item: set_idle_time(2),
+                    checked=lambda item: IDLE_TIME == 2
+                ),
+                pystray.MenuItem(
+                    "5 seconds",
+                    lambda icon, item: set_idle_time(5),
+                    checked=lambda item: IDLE_TIME == 5
+                ),
+                pystray.MenuItem(
+                    "10 seconds",
+                    lambda icon, item: set_idle_time(10),
+                    checked=lambda item: IDLE_TIME == 10
+                ),
+                pystray.MenuItem(
+                    "15 seconds",
+                    lambda icon, item: set_idle_time(15),
+                    checked=lambda item: IDLE_TIME == 15
+                ),
+                pystray.MenuItem(
+                    "30 seconds",
+                    lambda icon, item: set_idle_time(30),
+                    checked=lambda item: IDLE_TIME == 30
+                ),
+                pystray.MenuItem(
+                    "60 seconds",
+                    lambda icon, item: set_idle_time(60),
+                    checked=lambda item: IDLE_TIME == 60
+                ),
+            )
+        ),
+
+        # -------------------------
+        # LOOP SIZE
+        # -------------------------
+
+        pystray.MenuItem(
+            "Loop Size",
+            pystray.Menu(
+                pystray.MenuItem(
+                    "25%",
+                    lambda icon, item: set_loop_size(25),
+                    checked=lambda item: LOOP_SIZE == 25
+                ),
+                pystray.MenuItem(
+                    "50%",
+                    lambda icon, item: set_loop_size(50),
+                    checked=lambda item: LOOP_SIZE == 50
+                ),
+                pystray.MenuItem(
+                    "75%",
+                    lambda icon, item: set_loop_size(75),
+                    checked=lambda item: LOOP_SIZE == 75
+                ),
+                pystray.MenuItem(
+                    "100%",
+                    lambda icon, item: set_loop_size(100),
+                    checked=lambda item: LOOP_SIZE == 100
+                ),
+                pystray.MenuItem(
+                    "125%",
+                    lambda icon, item: set_loop_size(125),
+                    checked=lambda item: LOOP_SIZE == 125
+                ),
+                pystray.MenuItem(
+                    "150%",
+                    lambda icon, item: set_loop_size(150),
+                    checked=lambda item: LOOP_SIZE == 150
+                ),
+                pystray.MenuItem(
+                    "200%",
+                    lambda icon, item: set_loop_size(200),
+                    checked=lambda item: LOOP_SIZE == 200
+                ),
+            )
+        ),
+
+        pystray.Menu.SEPARATOR,
+
+        pystray.MenuItem(
+            "Exit",
+            exit_program
+        )
+    )
+
+
+# =========================
+# START
+# =========================
+
+print("Mouse mover running.")
+print("Look for the infinity icon in your system tray.")
+print()
+print("Automatic movement starts after inactivity.")
+print("Move the mouse to take control.")
+print("Move to the top-left corner for emergency stop.")
+
+# Start mouse movement in background
+thread = threading.Thread(
+    target=mouse_loop,
+    daemon=True
+)
+
+thread.start()
+
+
+# Create tray icon
+icon = pystray.Icon(
+    "MouseMover",
+    create_icon(),
+    "Mouse Mover",
+    build_menu()
+)
+
+icon.run()
