@@ -2,79 +2,177 @@ import pyautogui
 import time
 import math
 
+# =========================
+# SETTINGS
+# =========================
+
 pyautogui.FAILSAFE = True
+pyautogui.PAUSE = 0
 
-IDLE_TIME = 5
+IDLE_TIME = 5.0
 
-# Get screen dimensions
-SCREEN_W, SCREEN_H = pyautogui.size()
-
-# Size of the infinity symbol as a fraction of the screen
-RADIUS_X = SCREEN_W * 0.35
-RADIUS_Y = SCREEN_H * 0.20
-
-# Movement settings
+# How fast the infinity loop runs
 FPS = 100
 STEP = 0.04
 
-last_manual_pos = pyautogui.position()
-last_manual_time = time.monotonic()
+# Size of infinity loop
+SCREEN_W, SCREEN_H = pyautogui.size()
 
-center_x, center_y = last_manual_pos
+RADIUS_X = SCREEN_W * 0.35
+RADIUS_Y = SCREEN_H * 0.20
 
-angle = 0.0
+CENTER_X = SCREEN_W / 2
+CENTER_Y = SCREEN_H / 2
+
+
+# =========================
+# STATE
+# =========================
+
 moving = False
+angle = 0.0
 
-while True:
-    pos = pyautogui.position()
+last_user_position = pyautogui.position()
+last_user_movement = time.monotonic()
 
-    # Detect manual movement only when the script isn't moving the mouse
-    if not moving:
-        if pos != last_manual_pos:
-            last_manual_pos = pos
-            last_manual_time = time.monotonic()
 
-            # Use the current position as the center
-            center_x, center_y = pos
-            angle = 0.0
+# =========================
+# MAIN LOOP
+# =========================
 
-    # Start infinity movement after being idle
-    if not moving and time.monotonic() - last_manual_time >= IDLE_TIME:
-        moving = True
+print("Mouse mover running.")
+print()
+print("Automatic movement starts after 5 seconds of inactivity.")
+print()
+print("To STOP the program:")
+print("  - Press CTRL+C in this Command Prompt")
+print("  - OR move the mouse to the TOP-LEFT corner")
+print()
+print("Starting in 3 seconds...")
 
-    if moving:
+time.sleep(3)
 
-        # Infinity / figure-8 curve
-        x = center_x + RADIUS_X * math.sin(angle)
-        y = center_y + RADIUS_Y * math.sin(2 * angle)
+try:
 
-        # Keep cursor inside the screen
-        x = max(0, min(SCREEN_W - 1, x))
-        y = max(0, min(SCREEN_H - 1, y))
+    while True:
 
-        pyautogui.moveTo(
-            round(x),
-            round(y),
-            duration=0,
-            _pause=False
-        )
+        # ---------------------------------
+        # ALWAYS CHECK CURRENT MOUSE POSITION
+        # ---------------------------------
 
-        angle += STEP
+        current = pyautogui.position()
 
-        # Check if the user moved the mouse
-        new_pos = pyautogui.position()
+        # Explicit emergency stop
+        if current.x <= 2 and current.y <= 2:
+            print("Emergency stop.")
+            break
 
-        if (
-            abs(new_pos.x - round(x)) > 3 or
-            abs(new_pos.y - round(y)) > 3
-        ):
-            moving = False
 
-            center_x, center_y = new_pos
-            last_manual_pos = new_pos
-            last_manual_time = time.monotonic()
+        # =================================
+        # USER HAS CONTROL
+        # =================================
 
-        time.sleep(1 / FPS)
+        if not moving:
 
-    else:
-        time.sleep(0.02)
+            # Has the user moved the mouse?
+            if current != last_user_position:
+
+                last_user_position = current
+                last_user_movement = time.monotonic()
+
+            # Start automatically after exactly
+            # IDLE_TIME seconds without movement
+            elif time.monotonic() - last_user_movement >= IDLE_TIME:
+
+                moving = True
+
+                # ALWAYS start the infinity loop
+                # from the same point.
+                angle = 0.0
+
+                print("Automatic movement started.")
+
+
+        # =================================
+        # AUTOMATIC MOVEMENT
+        # =================================
+
+        else:
+
+            # Calculate infinity / figure-8 position
+            x = (
+                CENTER_X
+                + RADIUS_X * math.sin(angle)
+            )
+
+            y = (
+                CENTER_Y
+                + RADIUS_Y * math.sin(2 * angle)
+            )
+
+            # Keep cursor safely inside screen
+            x = max(1, min(SCREEN_W - 2, x))
+            y = max(1, min(SCREEN_H - 2, y))
+
+            target_x = round(x)
+            target_y = round(y)
+
+            # Move immediately
+            pyautogui.moveTo(
+                target_x,
+                target_y,
+                duration=0,
+                _pause=False
+            )
+
+            # Advance the animation
+            angle += STEP
+
+            # Keep angle from growing forever
+            if angle >= math.tau:
+                angle -= math.tau
+
+            # ---------------------------------
+            # IMPORTANT:
+            # Give the user a chance to take over
+            # ---------------------------------
+
+            time.sleep(1 / FPS)
+
+            actual = pyautogui.position()
+
+            # If the mouse isn't where WE just put it,
+            # something else moved it.
+            #
+            # Therefore assume the user has taken control.
+            if (
+                abs(actual.x - target_x) > 10
+                or
+                abs(actual.y - target_y) > 10
+            ):
+
+                moving = False
+
+                # Reset the idle timer NOW.
+                last_user_position = actual
+                last_user_movement = time.monotonic()
+
+                print("User movement detected.")
+                print("Waiting 5 seconds...")
+
+
+except pyautogui.FailSafeException:
+
+    print()
+    print("Emergency stop: mouse reached the top-left corner.")
+
+
+except KeyboardInterrupt:
+
+    print()
+    print("Stopped with CTRL+C.")
+
+
+finally:
+
+    print("Mouse mover stopped.")
