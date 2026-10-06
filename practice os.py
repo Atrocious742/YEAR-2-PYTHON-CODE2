@@ -5,7 +5,7 @@ def welcomeMessageData():
 
 welcomeMessageData()
 def test():
-    print("test")
+    print("starting up now...")
 def handleWelcomeInput():
     while True:
         try:

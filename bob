@@ -6,9 +6,12 @@ pyautogui.FAILSAFE = True
 
 IDLE_TIME = 5
 
-# Size of the infinity symbol
-RADIUS_X = 30
-RADIUS_Y = 15
+# Get screen dimensions
+SCREEN_W, SCREEN_H = pyautogui.size()
+
+# Size of the infinity symbol as a fraction of the screen
+RADIUS_X = SCREEN_W * 0.35
+RADIUS_Y = SCREEN_H * 0.20
 
 # Movement settings
 FPS = 100
@@ -25,24 +28,29 @@ moving = False
 while True:
     pos = pyautogui.position()
 
-    # Only treat movement as manual when we're NOT controlling the mouse
+    # Detect manual movement only when the script isn't moving the mouse
     if not moving:
         if pos != last_manual_pos:
             last_manual_pos = pos
             last_manual_time = time.monotonic()
 
-            # New anchor point
+            # Use the current position as the center
             center_x, center_y = pos
             angle = 0.0
 
-    # Wait until the mouse has been idle
+    # Start infinity movement after being idle
     if not moving and time.monotonic() - last_manual_time >= IDLE_TIME:
         moving = True
 
     if moving:
-        # Figure-8 / infinity curve
+
+        # Infinity / figure-8 curve
         x = center_x + RADIUS_X * math.sin(angle)
-        y = center_y + RADIUS_Y * math.sin(angle * 2)
+        y = center_y + RADIUS_Y * math.sin(2 * angle)
+
+        # Keep cursor inside the screen
+        x = max(0, min(SCREEN_W - 1, x))
+        y = max(0, min(SCREEN_H - 1, y))
 
         pyautogui.moveTo(
             round(x),
@@ -53,17 +61,15 @@ while True:
 
         angle += STEP
 
-        # Check whether the user has taken control.
+        # Check if the user moved the mouse
         new_pos = pyautogui.position()
 
-        expected_x = round(x)
-        expected_y = round(y)
-
         if (
-            abs(new_pos.x - expected_x) > 3 or
-            abs(new_pos.y - expected_y) > 3
+            abs(new_pos.x - round(x)) > 3 or
+            abs(new_pos.y - round(y)) > 3
         ):
             moving = False
+
             center_x, center_y = new_pos
             last_manual_pos = new_pos
             last_manual_time = time.monotonic()
@@ -72,5 +78,3 @@ while True:
 
     else:
         time.sleep(0.02)
-
-
