@@ -1,0 +1,101 @@
+id,customer,tier,issue,status,engineer,opened,resolved
+1,Seaton Surf School,1,Monitor shows no signal,Closed,Priya,15/09/2026 15:20,15/09/2026 16:20
+2,Marton Mews Hotel,3,Network switch failing,Closed,Kai,15/09/2026 15:55,16/09/2026 03:55
+3,Brambleway Dental,1,Cannot open shared folder,Closed,Sam,16/09/2026 12:55,16/09/2026 19:10
+4,Tees Lantern Cafe,1,Cannot open shared folder,Resolved,Priya,17/09/2026 09:30,17/09/2026 16:25
+5,Marton Mews Hotel,2,Shared mailbox missing,Resolved,Jordan,17/09/2026 10:15,17/09/2026 20:10
+6,Northgate Opticians,1,Password reset,Closed,Priya,17/09/2026 14:30,17/09/2026 23:10
+7,Saltburn Kite Shop,2,Shared mailbox missing,Closed,Jordan,18/09/2026 11:00,19/09/2026 15:45
+8,Cleveland Hills Tyres,1,Password reset,Closed,Sam,18/09/2026 11:15,18/09/2026 19:15
+9,Larkspur Nursery,3,Server will not boot,Closed,Kai,18/09/2026 12:35,22/09/2026 06:00
+10,Marton Mews Hotel,1,Teams camera not found,Closed,Sam,18/09/2026 13:15,18/09/2026 18:55
+11,Seaton Surf School,1,Laptop very slow to start,Closed,Sam,18/09/2026 14:55,18/09/2026 22:40
+12,Riverbank Vets,1,Outlook keeps asking to sign in,Closed,Priya,18/09/2026 15:10,18/09/2026 23:45
+13,Ormsby Print Works,1,Outlook keeps asking to sign in,Closed,Sam,21/09/2026 09:30,
+14,Ormsby Print Works,2,Scanner not found on the network,Closed,Ellis,21/09/2026 10:00,21/09/2026 23:55
+15,Ormsby Print Works,2,New starter needs a laptop set up,Closed,Ellis,21/09/2026 12:10,21/09/2026 20:20
+16,Marton Mews Hotel,3,Network switch failing,Closed,Kai,21/09/2026 15:25,25/09/2026 09:15
+17,Larkspur Nursery,two,Monitor shows no signal,Closed,Sam,22/09/2026 09:55,22/09/2026 16:20
+18,Seaton Surf School,3,Storage array warning,Closed,Kai,22/09/2026 10:45,22/09/2026 22:45
+19,Larkspur Nursery,3,Server will not boot,Closed,Kai,22/09/2026 11:10,26/09/2026 03:25
+20,Marton Mews Hotel,1,Password reset,Closed,Priya,22/09/2026 12:30,23/09/2026 09:50
+21,Marton Mews Hotel,1,Teams camera not found,Resolved,Sam,22/09/2026 13:25,22/09/2026 15:35
+22,Larkspur Nursery,1,Password reset,Closed,Priya,23/09/2026 10:55,24/09/2026 05:25
+23,Seaton Surf School,1,Password reset,Closed,Priya,23/09/2026 13:00,23/09/2026 18:50
+24,Larkspur Nursery,2,Scanner not found on the network,Closed,Ellis,23/09/2026 15:15,24/09/2026 11:40
+25,Kirkleatham Florists,1,Monitor shows no signal,Closed,Priya,24/09/2026 09:40,24/09/2026 18:05
+26,Kirkleatham Florists,2,VPN will not connect,Closed,Jordan,24/09/2026 10:40,25/09/2026 03:15
+27,Tees Lantern Cafe,1,Password reset,Resolved,Sam,24/09/2026 12:50,24/09/2026 17:15
+28,Cleveland Hills Tyres,2,New starter needs a laptop set up,Resolved,Jordan,24/09/2026 14:15,26/09/2026 14:45
+29,Kirkleatham Florists,2,Scanner not found on the network,Closed,Jordan,25/09/2026 11:45,26/09/2026 16:00
+30,Hartside Joinery,3,Suspected phishing on three accounts,Closed,Kai,25/09/2026 11:45,25/09/2026 21:00
+31,Seaton Surf School,3,Firewall blocking the card payments,Closed,Kai,25/09/2026 12:50,07/10/2026 04:30
+32,Seaton Surf School,2,Wi-Fi drops every hour,Closed,Ellis,25/09/2026 17:25,27/09/2026 13:10
+33,Northgate Opticians,1,Printer will not print,Closed,Sam,28/09/2026 08:45,29/09/2026 06:10
+34,Ormsby Print Works,3,Server will not boot,Closed,Kai,28/09/2026 09:15,01/10/2026 23:05
+35,Marton Mews Hotel,1,Keyboard not typing,open,Priya,28/09/2026 09:25,28/09/2026 12:10
+36,Northgate Opticians,2,Card reader offline,Closed,Jordan,28/09/2026 10:30,29/09/2026 08:15
+37,Seaton Surf School,1,Password reset,Closed,Priya,28/09/2026 12:20,28/09/2026 20:10
+38,Seaton Surf School,2,VPN will not connect,Resolved,Ellis,28/09/2026 13:20,28/09/2026 10:20
+39,Hartside Joinery,2,Card reader offline,Closed,Jordan,28/09/2026 13:25,30/09/2026 03:45
+40,Saltburn Kite Shop,1,Outlook keeps asking to sign in,Resolved,Priya,28/09/2026 17:15,28/09/2026 14:15
+41,Northgate Opticians,3,Storage array warning,Closed,Kai,29/09/2026 09:15,30/09/2026 16:15
+42,Riverbank Vets,2,Scanner not found on the network,Closed,Ellis,29/09/2026 09:30,01/10/2026 12:35
+43,Brambleway Dental,1,Cannot open shared folder,Closed,Sam,29/09/2026 09:35,29/09/2026 16:55
+44,Riverbank Vets,2,Shared mailbox missing,Closed,Ellis,29/09/2026 11:00,29/09/2026 19:10
+45,Brambleway Dental,1,Password reset,Closed,Sam,29/09/2026 13:45,29/09/2026 22:40
+46,Kirkleatham Florists,1,Teams camera not found,Closed,Sam,29/09/2026 13:45,29/09/2026 20:55
+47,Seaton Surf School,1,Printer will not print,Assigned,,29/09/2026 13:55,
+48,Brambleway Dental,2,Scanner not found on the network,Closed,Jordan,29/09/2026 15:15,01/10/2026 13:15
+49,Riverbank Vets,1,Laptop very slow to start,Closed,Priya,29/09/2026 16:05,29/09/2026 21:20
+50,Cleveland Hills Tyres,1,Keyboard not typing,Closed,Sam,29/09/2026 16:40,30/09/2026 10:55
+51,Seaton Surf School,3,Storage array warning,Closed,Kai,30/09/2026 14:10,02/10/2026 15:50
+52,Ormsby Print Works,3,Server will not boot,Closed,Kai,01/10/2026 08:30,02/10/2026 02:20
+53,Northgate Opticians,2,Wi-Fi drops every hour,Closed,Jordan,02/10/2026 12:55,03/10/2026 16:15
+54,Tees Lantern Cafe,2,Wi-Fi drops every hour,Closed,Jordan,02/10/2026 14:40,03/10/2026 00:40
+55,Riverbank Vets,1,Laptop very slow to start,Closed,Sam,02/10/2026 15:55,03/10/2026 13:00
+56,Northgate Opticians,1,Cannot open shared folder,Resolved,Priya,02/10/2026 16:20,02/10/2026 19:50
+57,Saltburn Kite Shop,1,Printer will not print,Closed,Sam,05/10/2026 09:50,05/10/2026 11:35
+58,Riverbank Vets,2,VPN will not connect,Closed,Jordan,05/10/2026 13:10,06/10/2026 08:00
+59,Larkspur Nursery,1,Monitor shows no signal,Closed,Priya,05/10/2026 15:05,05/10/2026 21:35
+60,Marton Mews Hotel,3,Suspected phishing on three accounts,Resolved,Kai,05/10/2026 16:40,09/10/2026 03:40
+61,Riverbank Vets,2,Card reader offline,Closed,Jordan,06/10/2026 09:05,07/10/2026 12:40
+62,Tees Lantern Cafe,1,Outlook keeps asking to sign in,Closed,Priya,06/10/2026 09:35,06/10/2026 17:35
+63,Marton Mews Hotel,1,Laptop very slow to start,Closed,Priya,06/10/2026 09:50,06/10/2026 18:25
+64,Brambleway Dental,2,Scanner not found on the network,Resolved,Jordan,06/10/2026 11:00,07/10/2026 08:10
+65,Seaton Surf School,3,Firewall blocking the card payments,Open,,14/09/2026 09:30,
+66,Kirkleatham Florists,1,Keyboard not typing,Resolved,Sam,06/10/2026 13:10,07/10/2026 08:05
+67,Brambleway Dental,1,Outlook keeps asking to sign in,Closed,Sam,06/10/2026 14:25,06/10/2026 17:50
+68,Larkspur Nursery,2,VPN will not connect,Resolved,Ellis,06/10/2026 15:10,07/10/2026 22:50
+,Northgate Opticians,1,Keyboard not typing,Closed,Sam,06/10/2026 15:55,06/10/2026 20:45
+70,Brambleway Dental,4,Printer will not print,Resolved,Sam,06/10/2026 16:20,06/10/2026 18:00
+7,Northgate Opticians,1,Cannot open shared folder,Closed,Priya,06/10/2026 17:15,06/10/2026 18:45
+72,Northgate Opticians,2,New starter needs a laptop set up,Resolved,Ellis,07/10/2026 08:40,08/10/2026 22:05
+73,Hartside Joinery,3,Firewall blocking the card payments,Open,,07/10/2026 09:40,
+74,Riverbank Vets,1,Password reset,Resolved,Sam,07/10/2026 09:50,07/10/2026 13:10
+75,Hartside Joinery,1,Printer will not print,Closed,Sam,07/10/2026 10:05,07/10/2026 14:45
+76,Riverbank Vets,1,Printer will not print,Resolved,Sam,07/10/2026 11:15,07/10/2026 15:40
+77,Cleveland Hills Tyres,1,Printer will not print,Open,,07/10/2026 11:30,07/10/2026 13:30
+78,Larkspur Nursery,1,Password reset,Closed,Sam,07/10/2026 11:35,07/10/2026 13:30
+79,Tees Lantern Cafe,1,Printer will not print,Closed,Sam,07/10/2026 11:45,08/10/2026 12:00
+80,Cleveland Hills Tyres,1,Printer will not print,Closed,Priya,2026-09-31 10:15,07/10/2026 19:10
+81,Saltburn Kite Shop,1,Keyboard not typing,Closed,Sam,07/10/2026 13:20,07/10/2026 18:40
+82,Larkspur Nursery,1,Cannot open shared folder,Closed,Sam,07/10/2026 14:40,07/10/2026 23:05
+83,Riverbank Vets,3,Suspected phishing on three accounts,Closed,Kai,07/10/2026 16:00,08/10/2026 11:15
+84,Riverbank Vets,2,VPN will not connect,Closed,Ellis,07/10/2026 16:30,08/10/2026 11:50
+85,Saltburn Kite Shop,2,Scanner not found on the network,Done,Jordan,08/10/2026 09:35,09/10/2026 04:20
+86,Hartside Joinery,1,Printer will not print,Open,Priya,08/10/2026 10:25,
+87,Hartside Joinery,3,Storage array warning,Assigned,Kai,08/10/2026 12:30,
+88,Cleveland Hills Tyres,1,Outlook keeps asking to sign in,Resolved,Priya,08/10/2026 15:45,08/10/2026 21:05
+89,Larkspur Nursery,2,VPN will not connect,Assigned,Jordan,08/10/2026 16:40,
+90,Tees Lantern Cafe,1,Keyboard not typing,Resolved,Priya,09/10/2026 08:55,09/10/2026 16:45
+91,Tees Lantern Cafe,2,Backup failed overnight,Assigned,Jordan,09/10/2026 10:50,
+92,Cleveland Hills Tyres,1,Outlook keeps asking to sign in,Resolved,Sam,09/10/2026 11:10,09/10/2026 14:10
+93,Hartside Joinery,2,Wi-Fi drops every hour,Assigned,Ellis,09/10/2026 11:20,
+94,Marton Mews Hotel,2,New starter needs a laptop set up,Assigned,Ellis,09/10/2026 11:40,
+95,Kirkleatham Florists,2,Shared mailbox missing,Assigned,Ellis,09/10/2026 11:50,
+96,Tees Lantern Cafe,1,Laptop very slow to start,Assigned,Sam,09/10/2026 12:25,
+97,Tees Lantern Cafe,1,Teams camera not found,Resolved,Sam,09/10/2026 12:45,09/10/2026 16:00
+98,Saltburn Kite Shop,1,Password reset,Assigned,Priya,09/10/2026 13:20,
+37,Kirkleatham Florists,1,Keyboard not typing,Assigned,Sam,09/10/2026 15:00,
+4,Marton Mews Hotel,1,Laptop very slow to start,Assigned,Sam,09/10/2026 15:50,
